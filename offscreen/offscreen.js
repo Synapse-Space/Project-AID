@@ -55,6 +55,8 @@ async function sendChunkToBackend(blob) {
     }
 }
 
+let audioCtx = null;
+
 chrome.runtime.onMessage.addListener(async (msg) => {
     if (msg.type === 'start_capture') {
         backendUrl = msg.backendUrl || backendUrl;
@@ -73,6 +75,11 @@ chrome.runtime.onMessage.addListener(async (msg) => {
 
             activeStream = stream;
             console.log("Offscreen capture started");
+
+            // Play the audio so the user can hear it
+            audioCtx = new AudioContext();
+            const source = audioCtx.createMediaStreamSource(stream);
+            source.connect(audioCtx.destination);
 
             // Loop to record chunks
             (async () => {
@@ -116,6 +123,10 @@ chrome.runtime.onMessage.addListener(async (msg) => {
         }
     } else if (msg.type === 'stop_capture') {
         activeStream = null; // This stops the loop
+        if (audioCtx) {
+            audioCtx.close();
+            audioCtx = null;
+        }
         // Stop tracks
         // Note: we don't need to stop 'recorder' because the loop handles it
         console.log("Offscreen capture stopped");

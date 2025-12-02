@@ -10,7 +10,8 @@
     "scripting",
     "tabs",
     "tabCapture",
-    "offscreen"
+    "offscreen",
+    "sidePanel"
   ],
   "host_permissions": [
     "http://localhost:8080/*",
@@ -23,6 +24,9 @@
   "action": {
     "default_popup": "popup/popup.html",
     "default_title": "Sign Video Builder"
+  },
+  "side_panel": {
+    "default_path": "sidepanel/sidepanel.html"
   },
   "options_page": "options/options.html",
   "content_scripts": [

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Video Builder - Live</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 16px;
+      background-color: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #333;
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+    }
+
+    .video-container {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .placeholder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      font-size: 0.9rem;
+      background: #eee;
+      z-index: 1;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    #startBtn {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    #startBtn:hover {
+      background-color: #43a047;
+    }
+
+    #stopBtn {
+      background-color: #f44336;
+      color: white;
+    }
+
+    #stopBtn:hover {
+      background-color: #e53935;
+    }
+
+    .captions-box {
+      flex: 1;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px;
+      overflow-y: auto;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #444;
+    }
+
+    .captions-box span {
+      transition: background 0.3s;
+    }
+
+    .current-word {
+      background-color: #fff176;
+      font-weight: bold;
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+
+    .status {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: #666;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h2>Live Sign Language</h2>
+
+  <div class="video-container">
+    <div id="placeholder" class="placeholder">Waiting for speech...</div>
+    <video id="videoPlayer" autoplay playsinline muted></video>
+  </div>
+
+  <div class="controls">
+    <button id="startBtn">Start Capture</button>
+    <button id="stopBtn">Stop</button>
+  </div>
+
+  <div class="captions-box" id="captionsBox">
+    <!-- Live captions will appear here -->
+  </div>
+
+  <div id="status" class="status">Ready</div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>
