@@ -8,7 +8,6 @@ A browser extension with backend services for audio/video processing and transla
 - **Backend Server**: Node.js/Express server for handling media processing
 - **Video Processing**: Stitching and normalizing video clips
 - **Translation API**: Integration with translation services
-- **Cross-Origin Support**: CORS enabled for extension-backend communication
 
 ## Project Structure
 
