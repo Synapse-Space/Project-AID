@@ -77,3 +77,8 @@ MANIFEST
 .history/*
 
 venv
+python-sidecar/.venv/
+python-sidecar/__pycache__/
+python-sidecar/.pytest_cache/
+python-sidecar/**/__pycache__/
+python-sidecar/models/
