@@ -22,25 +22,9 @@ The backend server for Project-AID, built with Node.js and Express. It handles v
     npm install
     ```
 
-3.  Install Python dependencies (for data scripts):
+3.  Set up the Python sidecar (separate service — see `python-sidecar/README.md` once Task 2 lands).
 
-    ```bash
-    pip install kagglehub
-    ```
-
-4.  **Important**: Download the WLASL dataset.
-    Run the download script from the project root:
-
-    ```bash
-    python download_wlasl.py
-    ```
-
-    _Note: This may take some time as the dataset is large._
-
-5.  Generate the word map:
-    ```bash
-    python generate_wordmap.py
-    ```
+4.  Build the ISL word map from ISLRTC (replaces the old WLASL pipeline — see plan Tasks 7–9).
 
 ## Configuration
 
@@ -52,7 +36,9 @@ The backend server for Project-AID, built with Node.js and Express. It handles v
 
 2.  Edit `.env` and set the required variables:
     - `PORT`: The port the server will run on (default: 8080).
-    - `ASSEMBLYAI_API_KEY`: Your AssemblyAI API key (if using transcription features).
+    - `SIDECAR_URL`: URL of the Python NLP/ASR sidecar (default: `http://127.0.0.1:8090`).
+    - `CLIP_CACHE_DIR`: Where cached ISL clips are stored on disk.
+    - `ISL_CLIP_BASE_URL`: Base URL for the ISLRTC clip source (set after reconnaissance).
 
 ## Usage
 
@@ -66,30 +52,24 @@ The server will start on `http://localhost:8080` (or the port specified in `.env
 
 ## API Endpoints
 
-### `POST /process-video`
+### `POST /stitch`
 
-Generates a sign language video from the provided text.
+Stitches a list of video clips into a single MP4. Used internally by the extension.
+
+### `POST /sign` *(added in Task 14)*
+
+Generates an ISL video from the provided text.
 
 **Request Body:**
 
 ```json
 {
-  "text": "Hello world"
+  "text": "I drink water."
 }
 ```
 
-**Response:**
+**Response:** `video/mp4` binary.
 
-Returns a stream of the generated video file.
+### `POST /transcribe` *(added in Task 6)*
 
-### `GET /health`
-
-Checks if the server is running.
-
-**Response:**
-
-```json
-{
-  "status": "ok"
-}
-```
+Proxies audio to the Python sidecar for Whisper transcription.
