@@ -85,3 +85,6 @@ python-sidecar/__pycache__/
 python-sidecar/.pytest_cache/
 python-sidecar/**/__pycache__/
 python-sidecar/models/
+
+# Allow backend test fixture MP4s (black video for ffmpeg stitch tests)
+!backend/test/fixtures/**/*.mp4

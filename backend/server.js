@@ -8,7 +8,9 @@ import axios from 'axios';
 import ffmpeg from 'fluent-ffmpeg';
 
 import { SidecarClient } from './lib/sidecar_client.js';
+import { ClipCache } from './lib/clip_cache.js';
 import { makeTranscribeRoute } from './routes/transcribe.js';
+import { makeSignRoute } from './routes/sign.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 8080;
@@ -34,6 +36,16 @@ if (!fs.existsSync(tempDir)) {
 // Sidecar client + transcription route
 const sidecar = new SidecarClient(SIDECAR_URL);
 app.use('/transcribe', makeTranscribeRoute(sidecar));
+
+// /sign end-to-end route: text -> gloss -> clips -> concat MP4
+const CLIP_CACHE_DIR = process.env.CLIP_CACHE_DIR || path.join(__dirname, '..', 'data', 'clip_cache');
+const WORDMAP_PATH = path.join(__dirname, '..', 'data', 'isl_wordmap.json');
+
+app.use('/sign', makeSignRoute({
+  sidecar,
+  clipCache: new ClipCache(CLIP_CACHE_DIR),
+  wordmapPath: WORDMAP_PATH,
+}));
 
 // Example API endpoint
 app.get('/api/translate', (req, res) => {
