@@ -1,0 +1,52 @@
+# ISL gloss rules. Each rule has an id, a kind, and parameters.
+# Kinds: drop_pos, lemmatize_verb, reorder_sov, hoist_time_first,
+#        move_negation_after_verb, wh_to_end, normalize_pronoun,
+#        plural_repetition, possessive_drop.
+# Rules run in the order listed.
+#
+# Any change here is meant to be reviewable by a deaf advisor.
+
+rules:
+  - id: drop_determiners
+    kind: drop_pos
+    pos: [DET]
+
+  - id: drop_aux
+    kind: drop_pos
+    pos: [AUX]
+
+  - id: drop_adp_function_words
+    kind: drop_lemma
+    lemmas: [to, of, for, with, at]
+    # NOTE with is semantically "BROTHER WITH" in ISL -> we keep "with"
+    # as WITH sign. This rule excludes it. Remove once a deaf advisor
+    # confirms preferred behaviour.
+
+  - id: lemmatize_verbs
+    kind: lemmatize_verb
+
+  - id: normalize_pronouns
+    kind: normalize_pronoun
+
+  - id: reorder_sov
+    kind: reorder_sov
+
+  - id: hoist_time_first
+    kind: hoist_time_first
+    time_lemmas: [today, tomorrow, yesterday, now, later, morning, evening, night]
+
+  - id: move_negation
+    kind: move_negation_after_verb
+
+  - id: wh_to_end
+    kind: wh_to_end
+    wh_lemmas: [who, what, where, when, why, how]
+
+  - id: plural_marking
+    kind: plural_repetition
+
+  - id: drop_possessives
+    kind: possessive_drop
+
+  - id: number_pass_through
+    kind: number_pass_through
