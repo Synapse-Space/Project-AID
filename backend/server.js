@@ -1,12 +1,20 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const fs = require('fs');
-const axios = require('axios');
-const ffmpeg = require('fluent-ffmpeg');
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import axios from 'axios';
+import ffmpeg from 'fluent-ffmpeg';
+
+import { SidecarClient } from './lib/sidecar_client.js';
+import { makeTranscribeRoute } from './routes/transcribe.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const PORT = process.env.PORT || 8080;
+const SIDECAR_URL = process.env.SIDECAR_URL || 'http://127.0.0.1:8090';
 
 const app = express();
-const PORT = 8080;
 
 // Enable CORS for all routes
 app.use(cors());
@@ -22,6 +30,10 @@ const tempDir = path.join(__dirname, '..', 'temp');
 if (!fs.existsSync(tempDir)) {
     fs.mkdirSync(tempDir, { recursive: true });
 }
+
+// Sidecar client + transcription route
+const sidecar = new SidecarClient(SIDECAR_URL);
+app.use('/transcribe', makeTranscribeRoute(sidecar));
 
 // Example API endpoint
 app.get('/api/translate', (req, res) => {
