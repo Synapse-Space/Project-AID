@@ -3,6 +3,7 @@ import base64
 from fastapi import FastAPI, HTTPException
 
 from app.asr import transcribe as asr_transcribe
+from app.parse import parse_clauses
 from app.models import (
     GlossRequest,
     GlossResponse,
@@ -29,7 +30,7 @@ def transcribe(req: TranscribeRequest) -> TranscribeResponse:
 
 @app.post("/parse", response_model=ParseResponse)
 def parse(req: ParseRequest) -> ParseResponse:
-    raise HTTPException(status_code=501, detail="not implemented yet")
+    return ParseResponse(clauses=parse_clauses(req.text, req.language))
 
 
 @app.post("/gloss", response_model=GlossResponse)
