@@ -22,11 +22,8 @@ def health() -> dict[str, str]:
 
 @app.post("/transcribe", response_model=TranscribeResponse)
 def transcribe(req: TranscribeRequest) -> TranscribeResponse:
-    try:
-        audio_bytes = base64.b64decode(req.audio_base64)
-        text, lang = asr_transcribe(audio_bytes, mime_type=req.mime_type, language=req.language)
-    except Exception as exc:
-        raise HTTPException(status_code=400, detail=f"invalid audio: {exc}") from exc
+    audio_bytes = base64.b64decode(req.audio_base64)
+    text, lang = asr_transcribe(audio_bytes, mime_type=req.mime_type, language=req.language)
     return TranscribeResponse(text=text, language_detected=lang)
 
 

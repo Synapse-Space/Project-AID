@@ -5,9 +5,9 @@ from app.main import app
 client = TestClient(app)
 
 
-def test_transcribe_route_exists():
-    resp = client.post("/transcribe", json={"audio_base64": "", "mime_type": "audio/webm"})
-    assert resp.status_code != 404
+# /transcribe is covered by test_asr.py::test_transcribe_route_end_to_end
+# (which sends real audio). The old "!= 404" stub was redundant once a real
+# handler landed and would spuriously flow empty bytes into ASR.
 
 
 def test_parse_route_exists():
