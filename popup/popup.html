@@ -119,11 +119,23 @@
   <button id="generateButton">Generate Video</button>
   
   <video id="videoPlayer" controls></video>
-  
+
   <a id="downloadLink" download="sign_video.mp4">Download Video</a>
-  
+
   <div id="status"></div>
-  
+
+  <hr>
+
+  <h3>Text to ISL (via /sign)</h3>
+  <div class="form-group">
+    <label for="signInput">Text to sign:</label>
+    <textarea id="signInput" rows="3" placeholder="e.g. I drink water."></textarea>
+  </div>
+  <div class="form-group">
+    <button id="signBtn">Sign it</button>
+  </div>
+  <video id="signPreview" controls style="width:100%; margin-top:10px;"></video>
+
   <script src="popup.js"></script>
 </body>
 </html>

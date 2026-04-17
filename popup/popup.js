@@ -254,3 +254,27 @@ function showStatus(message, type) {
   statusEl.textContent = message;
   statusEl.className = type;
 }
+
+// --- /sign wiring: text-to-ISL-video via backend ---
+const SIGN_ENDPOINT = 'http://127.0.0.1:8080/sign';
+
+document.getElementById('signBtn').addEventListener('click', async () => {
+  const text = document.getElementById('signInput').value.trim();
+  if (!text) return;
+
+  const resp = await fetch(SIGN_ENDPOINT, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ text }),
+  });
+
+  if (!resp.ok) {
+    alert(`Sign failed: ${resp.status}`);
+    return;
+  }
+
+  const blob = await resp.blob();
+  const video = document.getElementById('signPreview');
+  video.src = URL.createObjectURL(blob);
+  video.load();
+});
