@@ -1,12 +1,14 @@
 import base64
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 
 from app.asr import transcribe as asr_transcribe
+from app.gloss import to_gloss
 from app.parse import parse_clauses
 from app.models import (
     GlossRequest,
     GlossResponse,
+    GlossToken,
     ParseRequest,
     ParseResponse,
     TranscribeRequest,
@@ -35,4 +37,8 @@ def parse(req: ParseRequest) -> ParseResponse:
 
 @app.post("/gloss", response_model=GlossResponse)
 def gloss(req: GlossRequest) -> GlossResponse:
-    raise HTTPException(status_code=501, detail="not implemented yet")
+    clauses = parse_clauses(req.text, req.language)
+    tokens: list[GlossToken] = []
+    for c in clauses:
+        tokens.extend(to_gloss(c))
+    return GlossResponse(gloss=tokens)

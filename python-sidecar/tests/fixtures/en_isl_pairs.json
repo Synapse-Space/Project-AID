@@ -1,0 +1,12 @@
+[
+  {"en": "I drink water.",              "isl": ["I", "WATER", "DRINK"]},
+  {"en": "The cat is here.",            "isl": ["CAT", "HERE"]},
+  {"en": "I am running.",               "isl": ["I", "RUN"]},
+  {"en": "I go to school tomorrow.",    "isl": ["TOMORROW", "I", "SCHOOL", "GO"]},
+  {"en": "I do not go.",                "isl": ["I", "GO", "NOT"]},
+  {"en": "Where are you going?",        "isl": ["YOU", "GO", "WHERE"]},
+  {"en": "The dogs run.",               "isl": ["DOG+", "RUN"]},
+  {"en": "My book is here.",            "isl": ["I", "BOOK", "HERE"]},
+  {"en": "She reads the book.",         "isl": ["HE-SHE", "BOOK", "READ"]},
+  {"en": "We go home yesterday.",       "isl": ["YESTERDAY", "WE", "HOME", "GO"]}
+]

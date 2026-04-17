@@ -15,6 +15,8 @@ def test_parse_route_exists():
     assert resp.status_code != 404
 
 
-def test_gloss_route_exists():
-    resp = client.post("/gloss", json={"text": "hello", "language": "en"})
-    assert resp.status_code != 404
+def test_gloss_returns_tokens():
+    resp = client.post("/gloss", json={"text": "I drink water.", "language": "en"})
+    assert resp.status_code == 200
+    body = resp.json()
+    assert [t["gloss"] for t in body["gloss"]] == ["I", "WATER", "DRINK"]
