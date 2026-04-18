@@ -256,25 +256,33 @@ function showStatus(message, type) {
 }
 
 // --- /sign wiring: text-to-ISL-video via backend ---
-const SIGN_ENDPOINT = 'http://127.0.0.1:8080/sign';
+const SIGN_ENDPOINT = 'http://localhost:8080/sign';
 
 document.getElementById('signBtn').addEventListener('click', async () => {
   const text = document.getElementById('signInput').value.trim();
   if (!text) return;
 
-  const resp = await fetch(SIGN_ENDPOINT, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ text }),
-  });
+  try {
+    const resp = await fetch(SIGN_ENDPOINT, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
 
-  if (!resp.ok) {
-    alert(`Sign failed: ${resp.status}`);
-    return;
+    if (!resp.ok) {
+      const detail = await resp.text().catch(() => '');
+      showStatus(`Sign failed: ${resp.status}${detail ? ` — ${detail}` : ''}`, 'error');
+      return;
+    }
+
+    const blob = await resp.blob();
+    const video = document.getElementById('signPreview');
+    video.src = URL.createObjectURL(blob);
+    video.load();
+  } catch (err) {
+    showStatus(
+      `Sign request failed: ${err.message}. Is the backend running on http://localhost:8080?`,
+      'error',
+    );
   }
-
-  const blob = await resp.blob();
-  const video = document.getElementById('signPreview');
-  video.src = URL.createObjectURL(blob);
-  video.load();
 });

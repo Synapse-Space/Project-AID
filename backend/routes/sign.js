@@ -7,6 +7,34 @@ import ffmpeg from 'fluent-ffmpeg';
 export function makeSignRoute({ sidecar, clipCache, wordmapPath }) {
   const router = Router();
 
+  let cachedWordmap = null;
+  let cachedPhraseIndex = null;
+  function loadWordmap() {
+    if (cachedWordmap) return { wordmap: cachedWordmap, phraseIndex: cachedPhraseIndex };
+    const wordmap = JSON.parse(readFileSync(wordmapPath, 'utf8'));
+    const phraseIndex = new Map();
+    for (const key of Object.keys(wordmap)) {
+      for (const word of key.toLowerCase().split(/\s+/)) {
+        if (!phraseIndex.has(word)) phraseIndex.set(word, key);
+      }
+    }
+    cachedWordmap = wordmap;
+    cachedPhraseIndex = phraseIndex;
+    return { wordmap, phraseIndex };
+  }
+
+  function resolveGloss(g, wordmap, phraseIndex) {
+    const candidates = [g.gloss, g.gloss?.toLowerCase(), g.source_text?.toLowerCase()].filter(Boolean);
+    for (const c of candidates) {
+      if (wordmap[c]) return { key: c, entry: wordmap[c] };
+    }
+    for (const c of candidates) {
+      const phraseKey = phraseIndex.get(c);
+      if (phraseKey) return { key: phraseKey, entry: wordmap[phraseKey] };
+    }
+    return null;
+  }
+
   router.post('/', async (req, res) => {
     try {
       const { text } = req.body || {};
@@ -15,14 +43,14 @@ export function makeSignRoute({ sidecar, clipCache, wordmapPath }) {
       }
 
       const glossTokens = await sidecar.gloss({ text, language: 'en' });
-      const wordmap = JSON.parse(readFileSync(wordmapPath, 'utf8'));
+      const { wordmap, phraseIndex } = loadWordmap();
 
       const clipPaths = [];
       const missing = [];
       for (const g of glossTokens) {
-        const entry = wordmap[g.gloss];
-        if (!entry) { missing.push(g.gloss); continue; }
-        const p = await clipCache.get(g.gloss, entry.clip_url);
+        const hit = resolveGloss(g, wordmap, phraseIndex);
+        if (!hit) { missing.push(g.gloss); continue; }
+        const p = await clipCache.get(hit.key, hit.entry.clip_url);
         clipPaths.push(p);
       }
       if (clipPaths.length === 0) {
